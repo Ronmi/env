@@ -66,10 +66,10 @@ func TestEnv(t *testing.T) {
 				os.Setenv("PREFIX_"+key, val)
 			},
 			run: func(data interface{}) error {
-				return ParseWithPrefix(data, "PREFIX_")
+				return PrefixedParse(data, "PREFIX_")
 			},
 			runWithFuncs: func(data interface{}, c CustomParsers) error {
-				return ParseWithFuncsAndPrefix(data, c, "PREFIX_")
+				return PrefixedParseWithFuncs(data, c, "PREFIX_")
 			},
 		},
 	}

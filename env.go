@@ -38,11 +38,11 @@ type ParserFunc func(v string) (interface{}, error)
 // Parse parses a struct containing `env` tags and loads its values from
 // environment variables.
 func Parse(v interface{}) error {
-	return ParseWithPrefix(v, "")
+	return PrefixedParse(v, "")
 }
 
-// ParseWithPrefix is identical to Parse, except it adds prefix to environment variable names.
-func ParseWithPrefix(v interface{}, prefix string) error {
+// PrefixedParse is identical to Parse, except it adds prefix to environment variable names.
+func PrefixedParse(v interface{}, prefix string) error {
 	ptrRef := reflect.ValueOf(v)
 	if ptrRef.Kind() != reflect.Ptr {
 		return ErrNotAStructPtr
@@ -57,12 +57,12 @@ func ParseWithPrefix(v interface{}, prefix string) error {
 // ParseWithFuncs is the same as `Parse` except it also allows the user to pass
 // in custom parsers.
 func ParseWithFuncs(v interface{}, funcMap CustomParsers) error {
-	return ParseWithFuncsAndPrefix(v, funcMap, "")
+	return PrefixedParseWithFuncs(v, funcMap, "")
 }
 
 // ParseWithFuncs is the same as `Parse` except it also allows the user to pass
 // in custom parsers.
-func ParseWithFuncsAndPrefix(v interface{}, funcMap CustomParsers, prefix string) error {
+func PrefixedParseWithFuncs(v interface{}, funcMap CustomParsers, prefix string) error {
 	ptrRef := reflect.ValueOf(v)
 	if ptrRef.Kind() != reflect.Ptr {
 		return ErrNotAStructPtr
@@ -80,7 +80,7 @@ func doParse(ref reflect.Value, funcMap CustomParsers, prefix string) error {
 
 	for i := 0; i < refType.NumField(); i++ {
 		if reflect.Ptr == ref.Field(i).Kind() && !ref.Field(i).IsNil() && ref.Field(i).CanSet() {
-			err := ParseWithPrefix(ref.Field(i).Interface(), prefix)
+			err := PrefixedParse(ref.Field(i).Interface(), prefix)
 			if nil != err {
 				return err
 			}
